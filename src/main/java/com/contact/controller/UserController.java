@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.contact.dto.ContactDto;
 import com.contact.entities.Contact;
+import com.contact.entities.User;
 import com.contact.httpResponse.DataResponse;
 import com.contact.messagesAndCodes.ResponseMessage;
 import com.contact.messagesAndCodes.StatusCode;
 import com.contact.repository.ContactRepository;
+import com.contact.repository.UserRepository;
 import com.contact.service.UserService;
 import jakarta.validation.Valid;
 
@@ -27,10 +29,13 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@Autowired
 	private ContactRepository contactRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@PostMapping("/add-contact")
 	public DataResponse addContact(@Valid @RequestBody ContactDto contactDto, BindingResult bindingResult,
@@ -79,13 +84,18 @@ public class UserController {
 	@GetMapping("/delete-contact/{id}")
 	public DataResponse deleteContact(@PathVariable("id") Integer id, Principal principal) {
 
+		User user = userRepository.getUserByUserName(principal.getName());
 		Contact contact = contactRepository.findById(id).get();
 
 		try {
 
 			if (contact != null) {
-				userService.deleteContact(contact, principal);
+				if (user.getId() == contact.getUser().getId()) {
+				userService.deleteContact(user, contact);
 				return new DataResponse(StatusCode.SUCCESS, ResponseMessage.DELETE_CONTACT, null);
+				}
+				else
+					return new DataResponse(StatusCode.BAD_REQUEST, ResponseMessage.NOT_AUTHORIZED, null);	
 			} else
 				return new DataResponse(StatusCode.NO_CONTENT, ResponseMessage.NO_CONTENT, null);
 		} catch (Exception e) {
@@ -120,7 +130,7 @@ public class UserController {
 		
 		try {
 			List<Contact> contacts = userService.searchContact(searchKey, principal);
-			if (contacts != null)
+			if (!(contacts.isEmpty()))
 				return new DataResponse(StatusCode.SUCCESS, ResponseMessage.OK, contacts);
 			else
 				return new DataResponse(StatusCode.NO_CONTENT, ResponseMessage.NO_CONTENT, null);

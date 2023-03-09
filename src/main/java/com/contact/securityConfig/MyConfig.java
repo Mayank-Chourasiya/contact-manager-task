@@ -44,28 +44,14 @@ public class MyConfig{
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
-		
-		
+			
 		http.authorizeHttpRequests().requestMatchers("/user/**").hasRole("USER")
 		.requestMatchers("/**").permitAll().and().formLogin().disable().httpBasic().and().csrf().disable();
-		
-//		http
-//        .authorizeRequests()
-//            .requestMatchers("/public/**").permitAll()
-//            .anyRequest().authenticated()
-//            .and()
-//        .formLogin()
-//            .and()
-//        .logout()
-//            .logoutUrl("/logout")
-//            .logoutSuccessUrl("/login?logout")
-//            .and()
-//        .csrf().disable();
 		
 		http.authenticationProvider(authenticationProvider());
 		
 		DefaultSecurityFilterChain defaultSecurityFilterChain = http.build();
+		
 		return defaultSecurityFilterChain;
 	}
 	

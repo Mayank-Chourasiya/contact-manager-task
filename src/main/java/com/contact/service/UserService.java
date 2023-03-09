@@ -15,7 +15,7 @@ public interface UserService {
 	
 	List<Contact> searchContact(String searchKey, Principal principal) throws Exception;
 
-	void deleteContact(Contact contact, Principal principal) throws Exception;
+	void deleteContact(User user, Contact contact) throws Exception;
 
 	void updateContact(ContactDto contactDto, Contact contact , Principal principal) throws Exception;
 

@@ -51,14 +51,11 @@ public class UserServiceImplementation implements UserService {
 
 	}
 
-	public void deleteContact(Contact contact, Principal principal) throws Exception {
+	public void deleteContact(User user, Contact contact) throws Exception {
 
-		User user = userRepository.getUserByUserName(principal.getName());
-
-		if (user.getId() == contact.getUser().getId()) {
 			user.getContacts().remove(contact);
 			userRepository.save(user);
-		}
+		
 
 	}
 

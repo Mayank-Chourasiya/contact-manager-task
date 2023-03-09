@@ -22,7 +22,7 @@ public class ResponseMessage {
 
 	public static final String OK = "Ok";
 
-	// public static final String CONTACT_LIST = "Your contacts are";
+	public static final String NOT_AUTHORIZED = "Your are not authorized to delete this contact";
 
 	public static final String USER_EXIST = "User already exist";
 
